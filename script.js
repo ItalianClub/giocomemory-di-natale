@@ -1,72 +1,67 @@
-// Italiaanse kerstwoorden voor het memoryspel
-const italianWords = [
-  "albero", "regalo", "Babbo Natale", "panettone", "presepe",
-  "stella", "campana", "neve", "candela", "angelo",
-  "albero", "regalo", "Babbo Natale", "panettone", "presepe",
-  "stella", "campana", "neve", "candela", "angelo",
-  "renna", "renna", "fiocco", "fiocco", "calza"
-];
-
-let flippedCards = [];
-let matchedCards = [];
-
-// Schud de kaarten
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+/* Algemene styling */
+body {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  background-color: #fefae0;
+  margin: 0;
+  padding: 0;
 }
 
-// Maak het speelbord
-function createBoard() {
-  shuffle(italianWords);
-  const board = document.getElementById("game-board");
-  board.innerHTML = ""; // Maak het bord leeg
-  italianWords.forEach((word, index) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.dataset.name = word;
-    card.dataset.index = index;
-    card.addEventListener("click", flipCard);
-    board.appendChild(card);
-  });
+h1 {
+  color: #d62828;
+  margin-top: 20px;
 }
 
-// Kaarten omdraaien
-function flipCard() {
-  if (this.classList.contains("flipped") || flippedCards.length >= 2) return;
-
-  this.classList.add("flipped");
-  this.textContent = this.dataset.name;
-  flippedCards.push(this);
-
-  if (flippedCards.length === 2) {
-    setTimeout(checkMatch, 800);
-  }
+p {
+  font-size: 1.2em;
+  color: #6c757d;
+  margin-bottom: 20px;
 }
 
-// Controleren op match
-function checkMatch() {
-  const [card1, card2] = flippedCards;
-
-  if (card1.dataset.name === card2.dataset.name) {
-    card1.classList.add("matched");
-    card2.classList.add("matched");
-    matchedCards.push(card1, card2);
-  } else {
-    card1.classList.remove("flipped");
-    card2.classList.remove("flipped");
-    card1.textContent = "";
-    card2.textContent = "";
-  }
-
-  flippedCards = [];
-
-  if (matchedCards.length === italianWords.length) {
-    setTimeout(() => alert("🎉 Hai vinto! Buon Natale! 🎄"), 500);
-  }
+/* Speelbord */
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(5, 120px);
+  grid-gap: 10px;
+  justify-content: center;
+  margin: 0 auto;
 }
 
-// Start het spel
-createBoard();
+.card {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Voor- en achterkant van de kaart */
+.card .front,
+.card .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* Zorgt ervoor dat de achterkant niet in spiegelbeeld is */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card .front {
+  background-color: #f4a261;
+  color: transparent; /* Tekst verborgen aan de voorkant */
+}
+
+.card .back {
+  background-color: #2a9d8f;
+  color: white;
+  transform: rotateY(180deg); /* Alleen de achterkant wordt omgedraaid */
+}
